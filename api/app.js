@@ -8,7 +8,7 @@ var corsOptions = {
 };
 
 const db = require("./models");
-db.sequelize.sync({ force: false }).then(() => {
+db.sequelize.sync({ alter: true }).then(() => {
     console.log("Drop and re-sync db.");
 });
 
@@ -22,12 +22,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome to Maria's application." });
 });
 
 require("./routes/contacts.routes")(app);
 require("./routes/phones.routes")(app);
 require("./routes/stats.routes")(app);
+require("./routes/companies.routes")(app);
 
 // set port, listen for requests
 const PORT = 5000;

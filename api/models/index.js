@@ -22,5 +22,14 @@ db.sequelize = sequelize;
 /* Create database tables and models */
 db.contacts = require("./contact.model.js")(sequelize, Sequelize);
 db.phones = require("./phone.model.js")(sequelize, Sequelize);
+db.companies = require('./company.model.js')(sequelize, Sequelize);
+
+sequelize.sync({ alter: true }) // Automatically updates the schema
+    .then(() => {
+        console.log('Database synchronized');
+    })
+    .catch(err => {
+        console.error('Error synchronizing database:', err);
+    });
 
 module.exports = db;
