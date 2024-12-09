@@ -17,6 +17,16 @@ function Contact(props) {
             });
     }, []);
 
+    useEffect(() => {
+        fetch('http://localhost/api/contacts/' + contact.id + '/companies')
+            .then(response => response.json())
+            .then(data => setCompanies(data))
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }, []);
+
+
     const expandStyle = {
         display: expanded ? 'block' : 'none'
     };

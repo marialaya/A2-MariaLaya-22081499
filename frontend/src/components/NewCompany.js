@@ -1,28 +1,36 @@
 import React, { useState } from 'react';
 
-function NewCompany({ companies, setCompanies }) {
+function NewCompany(props) {
+    const {contact, companies, setCompanies} = props;
     const [company_name, setCompanyName] = useState('');
     const [company_address, setCompanyAddress] = useState('');
 
-    const createCompany = async (e) => {
+    async function createCompany(e) {
         e.preventDefault();
 
-        const response = await fetch('http://localhost/api/companies', {
+        const response = await fetch('http://localhost/api/contacts/' + contact.id + '/companies', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ company_name: company_name, company_address: company_address, contact_id: contactId }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                company_name : company_name,
+                company_address: company_address,
+            })
         });
 
         const data = await response.json();
+
         if (data.id) {
             setCompanies([...companies, data]);
-            setCompanyName('');
-            setCompanyAddress('');
         }
-    };
+
+        setCompanyName('');
+        setCompanyAdresss('');
+    }
 
     return (
-        <form className='new-company' onSubmit={createCompany}>
+        <form onSubmit={createCompany} onClick={(e) => e.stopPropagation()} className='new-company'>
             <input
                 type="text"
                 placeholder="Company Name"

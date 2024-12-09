@@ -1,6 +1,5 @@
 const db = require("../models");
 const Companies = db.companies; // Reference the 'Company' model
-const Op = db.Sequelize.Op;
 
 // Create a new company
 exports.create = (req, res) => {
@@ -30,7 +29,7 @@ exports.findAll = (req, res) => {
         }
     })
         .then(data => {
-            res.status(200).send(data);
+            res.send(data);
         })
         .catch(err => {
             res.status(500).send({
@@ -44,7 +43,7 @@ exports.findOne = (req, res) => {
     Companies.findOne({
         where: {
             contactId: req.params.contactId,
-            Id: req.params.companyId,  // Use company_id as defined in your model
+            company_id: req.params.companyId,  // Use company_id as defined in your model
         }
     })
         .then(data => {
@@ -65,10 +64,10 @@ exports.findOne = (req, res) => {
 
 // Update a specific company by ID
 exports.update = (req, res) => {
-   const id = req.params.companyId;
+   const companyId = req.params.companyId;
 
     Companies.update(req.body, {
-        where: { id: id, contactId: req.params.contactId }
+        where: { company_id: companyId, contactId: req.params.contactId }
     })
         .then(num => {
             if (num == 1) {
@@ -90,10 +89,10 @@ exports.update = (req, res) => {
 
 // Delete a specific company by ID
 exports.delete = (req, res) => {
-    const id = req.params.companyId;
+    const companyId = req.params.companyId;
 
     Companies.destroy({
-        where: { id: id, contactId: req.params.contactId }
+        where: { company_id: companyId, contactId: req.params.contactId }
     })
         .then(num => {
             if (num == 1) {
