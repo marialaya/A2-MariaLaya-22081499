@@ -9,10 +9,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      item_price: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-      },
     });
     return Item;
   };

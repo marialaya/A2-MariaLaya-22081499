@@ -10,13 +10,13 @@ module.exports = app => {
     router.get("/items", items.findAll);
   
     // Retrieve a single item by ID
-    router.get("/items/:itemId", items.findOne);
+    router.get("/items/:item_id", items.findOne);
   
     // Update an item by ID
-    router.put("/items/:itemId", items.update);
+    router.put("/items/:item_id", items.update);
   
     // Delete an item by ID
-    router.delete("/items/:itemId", items.delete);
+    router.delete("/items/:item_id", items.delete);
   
     app.use('/api', router);
   };

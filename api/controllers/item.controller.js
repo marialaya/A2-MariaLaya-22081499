@@ -5,7 +5,6 @@ const Items = db.items; // Sequelize model for items
 exports.create = (req, res) => {
     const item = {
         item_name: req.body.item_name,
-        item_price: req.body.item_price
     };
 
     Items.create(item)

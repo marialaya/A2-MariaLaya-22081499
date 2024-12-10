@@ -5,7 +5,8 @@ const Customers = db.customers; // Sequelize model for customers
 exports.create = (req, res) => {
     const customer = {
         customer_name: req.body.customer_name,
-        customer_email: req.body.customer_email
+        customer_email: req.body.customer_email,
+        customer_phonenumber: req.body.customer_phonenumber
     };
 
     Customers.create(customer)
