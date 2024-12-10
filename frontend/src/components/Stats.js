@@ -6,12 +6,14 @@ function Stats() {
     const [totalPhones, setTotalPhones] = useState(0);
     const [lastUpdatedContact, setLastUpdatedContact] = useState('');
     const [oldestContact, setOldestContact] = useState('');
+    const [totalCompanies, setTotalCompanies] = useState(0);
 
     async function getStats() {
         const response = await fetch('http://localhost/api/stats');
         const data = await response.json();
         setTotalContacts(data.totalContacts);
         setTotalPhones(data.totalPhones);
+        setTotalCompanies(data.totalCompanies);
         setLastUpdatedContact(data.lastUpdatedContact);
         setOldestContact(data.oldestContact);
     }
@@ -34,6 +36,9 @@ function Stats() {
                 
                 <p><b>Number of Phones:</b></p>
                 <p>{totalPhones}</p>
+
+                <p><b>Number of Companies:</b></p>
+                <p>{totalCompanies}</p>
                 
                 <p><b>Newest Contact Timestamp:</b></p>
                 <p>{lastUpdatedContact}</p>
