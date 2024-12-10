@@ -35,14 +35,14 @@ function CompanyList({ contact, companies, setCompanies }) {
           ) : (
             <tr>
               <td colSpan="3" style={{ textAlign: "center" }}>
-                No companies added yet.
+                No companies added yet
               </td>
             </tr>
           )}
         </tbody>
 
       </table>
-      
+
     </div>
   );
 }
