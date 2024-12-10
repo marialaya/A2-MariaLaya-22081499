@@ -1,51 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-function NewCompany(props) {
-    const {contact, companies, setCompanies} = props;
-    const [company_name, setCompanyName] = useState('');
-    const [company_address, setCompanyAddress] = useState('');
+function NewCompany({ contact, companies, setCompanies }) {
+  const [newName, setNewName] = useState("");
+  const [newAddress, setNewAddress] = useState("");
 
-    async function createCompany(e) {
-        e.preventDefault();
+  async function createCompany(e) {
+    e.preventDefault();
 
-        const response = await fetch('http://localhost/api/contacts/' + contact.id + '/companies', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                company_name : company_name,
-                company_address: company_address,
-            })
-        });
-
-        const data = await response.json();
-
-        if (data.id) {
-            setCompanies([...companies, data]);
+    try {
+      const response = await fetch(
+        `http://localhost/api/contacts/${contact.id}/companies`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            company_name: newName,
+            company_address: newAddress,
+          }),
         }
+      );
 
-        setCompanyName('');
-        setCompanyAdresss('');
+      if (response.ok) {
+        const newCompany = await response.json();
+        setCompanies([...companies, newCompany]);
+        setNewName("");
+        setNewAddress("");
+      } else {
+        console.error("Failed to create company:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error creating company:", error);
     }
+  }
 
-    return (
-        <form onSubmit={createCompany} onClick={(e) => e.stopPropagation()} className='new-company'>
-            <input
-                type="text"
-                placeholder="Company Name"
-                value={company_name}
-                onChange={(e) => setCompanyName(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Company Address"
-                value={company_address}
-                onChange={(e) => setCompanyAddress(e.target.value)}
-            />
-            <button className='button green' type="submit">Add Company</button>
-        </form>
-    );
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault(); 
+        e.stopPropagation(); 
+        createCompany(e);
+      }}
+      className="new-company"
+      
+    >
+    <input
+        type="text"
+        placeholder="Company Name"
+        value={newName}
+        onChange={(e) => setNewName(e.target.value)}
+    />
+    <input
+        type="text"
+        placeholder="Company Address"
+        value={newAddress}
+        onChange={(e) => setNewAddress(e.target.value)}
+    />
+    <button 
+        className="button green" 
+        type="submit" 
+        onClick={(e) => {
+        e.stopPropagation();
+        }}
+    >
+        Add {contact.name}'s Company
+      </button>
+    </form>
+  );
 }
 
 export default NewCompany;

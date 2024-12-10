@@ -222,3 +222,12 @@
     padding-left: 15px;
     padding-right: 15px;
 }
+
+.blue {
+    background-color: #2196F3; /* Blue color */
+    color: white;
+}
+
+.blue:hover {
+    background-color: #0b7dda; /* Darker blue on hover */
+}

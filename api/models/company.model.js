@@ -6,10 +6,12 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
         },
         company_name: {
-            type: Sequelize.STRING,     
+            type: Sequelize.STRING,
+            field: 'company_name',     
         },
         company_address: {
             type: Sequelize.STRING,
+            field: 'company_address',
         },
         contactId: {
             type: Sequelize.INTEGER,

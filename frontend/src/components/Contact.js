@@ -62,7 +62,8 @@ function Contact(props) {
             <div style={expandStyle}>
                 <hr />
                 <PhoneList phones={phones} setPhones={setPhones} contact={contact} />
-                {/* <CompanyList companies={companies} setCompanies={setCompanies} contact={contact} /> */}
+                <hr />
+                <CompanyList companies={companies} setCompanies={setCompanies} contact={contact} />
             </div>
         </div>
     );

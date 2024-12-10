@@ -2,7 +2,6 @@ const db = require("../models");
 const Phones = db.phones;
 const Op = db.Sequelize.Op;
 
-// Create phone
 exports.create = (req, res) => {
     const phone = {
         phone_type: req.body.phone_type,
@@ -22,7 +21,6 @@ exports.create = (req, res) => {
         });
 };
 
-// Get all phones
 exports.findAll = (req, res) => {
 
     Phones.findAll({
@@ -40,7 +38,6 @@ exports.findAll = (req, res) => {
         });
 };
 
-// Get one phone by id
 exports.findOne = (req, res) => {
     Phones.findOne({
         where: {
@@ -58,7 +55,6 @@ exports.findOne = (req, res) => {
         });
 };
 
-// Update one phone by id
 exports.update = (req, res) => {
     const id = req.params.phoneId;
 
@@ -83,7 +79,6 @@ exports.update = (req, res) => {
         });
 };
 
-// Delete one phone by id
 exports.delete = (req, res) => {
     const id = req.params.phoneId;
 

@@ -3,7 +3,6 @@ const Contacts = db.contacts;
 const Phones = db.phones;
 const Op = db.Sequelize.Op;
 
-// Create contact
 exports.create = (req, res) => {
     const contact = {
         name: req.body.name,
@@ -22,7 +21,7 @@ exports.create = (req, res) => {
         });
 };
 
-// Get all contacts
+
 exports.findAll = (req, res) => {
     Contacts.findAll()
         .then(data => {
@@ -35,7 +34,6 @@ exports.findAll = (req, res) => {
         });
 };
 
-// Get one contact by id
 exports.findOne = (req, res) => {
     const id = req.params.contactId;
 
@@ -51,7 +49,6 @@ exports.findOne = (req, res) => {
     );
 };
 
-// Update one contact by id
 exports.update = (req, res) => {
     const id = req.params.contactId;
 
@@ -76,7 +73,6 @@ exports.update = (req, res) => {
     });
 };
 
-// Delete one contact by id
 exports.delete = (req, res) => {
     const id = parseInt(req.params.contactId);
 
