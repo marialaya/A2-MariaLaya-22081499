@@ -56,7 +56,7 @@ function Contact(props) {
             </div>
 
             <div className="button">
-                <button className='button red' onClick={doDelete}>Delete Contact</button>
+                <button className='button red' onClick={doDelete}>Delete Contact</button> 
             </div>
 
             <div style={expandStyle}>
