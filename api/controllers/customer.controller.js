@@ -1,5 +1,6 @@
 const db = require('../models');
 const Customers = db.customers; // Sequelize model for customers
+const Orders = db.orders;
 
 // Create a new customer
 exports.create = (req, res) => {
@@ -35,7 +36,7 @@ exports.findAll = (req, res) => {
 
 // Get customer by ID
 exports.findOne = (req, res) => {
-    const customerId = req.params.id;
+    const customerId = req.params.customer_id;
     Customers.findOne({
         where: { customer_id: customerId }
     })
@@ -57,7 +58,7 @@ exports.findOne = (req, res) => {
 
 // Update customer by ID
 exports.update = (req, res) => {
-    const customerId = req.params.id;
+    const customerId = req.params.customer_id;
     Customers.update(req.body, {
         where: { customer_id: customerId }
     })
@@ -81,7 +82,7 @@ exports.update = (req, res) => {
 
 // Delete customer by ID
 exports.delete = (req, res) => {
-    const customerId = req.params.id;
+    const customerId = req.params.customer_id;
 
     Customers.destroy({
         where: { customer_id: customerId }
@@ -102,4 +103,23 @@ exports.delete = (req, res) => {
                 message: "Could not delete customer with id=" + customerId
             });
         });
+};
+
+// Retrieve all orders for a customer
+exports.findOrders = async (req, res) => {
+    try {
+        const { customer_id } = req.params;
+
+        const customer = await Customers.findByPk(customer_id, {
+            include: [{ model: Orders, as: "orders" }],
+        });
+
+        if (!customer) {
+            return res.status(404).send({ message: "Customer not found." });
+        }
+
+        res.status(200).send(customer.orders);
+    } catch (err) {
+        res.status(500).send({ message: "Error retrieving orders for customer.", error: err.message });
+    }
 };

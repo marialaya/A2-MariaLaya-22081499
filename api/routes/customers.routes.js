@@ -10,13 +10,15 @@ module.exports = app => {
     router.get("/customers", customers.findAll);
   
     // Retrieve a single customer by ID
-    router.get("/customers/:customerId", customers.findOne);
+    router.get("/customers/:customer_id", customers.findOne);
   
     // Update a customer by ID
-    router.put("/customers/:customerId", customers.update);
+    router.put("/customers/:customer_id", customers.update);
   
     // Delete a customer by ID
-    router.delete("/customers/:customerId", customers.delete);
+    router.delete("/customers/:customer_id", customers.delete);
+
+    router.get("/customers/:customer_id/orders", customers.findOrders);
   
     app.use('/api', router);
   };

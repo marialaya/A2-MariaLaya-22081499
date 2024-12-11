@@ -1,5 +1,6 @@
 const db = require('../models');
-const Items = db.items; // Sequelize model for items
+const Items = db.items;
+const Orders = db.orders; 
 
 // Create a new item
 exports.create = (req, res) => {
@@ -33,7 +34,7 @@ exports.findAll = (req, res) => {
 
 // Get item by ID
 exports.findOne = (req, res) => {
-    const itemId = req.params.id;
+    const itemId = req.params.item_id;
     Items.findOne({
         where: { item_id: itemId }
     })
@@ -55,7 +56,7 @@ exports.findOne = (req, res) => {
 
 // Update item by ID
 exports.update = (req, res) => {
-    const itemId = req.params.id;
+    const itemId = req.params.item_id;
     Items.update(req.body, {
         where: { item_id: itemId }
     })
@@ -79,7 +80,7 @@ exports.update = (req, res) => {
 
 // Delete item by ID
 exports.delete = (req, res) => {
-    const itemId = req.params.id;
+    const itemId = req.params.item_id;
 
     Items.destroy({
         where: { item_id: itemId }
@@ -100,4 +101,23 @@ exports.delete = (req, res) => {
                 message: "Could not delete item with id=" + itemId
             });
         });
+};
+
+// Retrieve all orders containing a specific item
+exports.findOrders = async (req, res) => {
+    try {
+        const { item_id } = req.params;
+
+        const orders = await Orders.findAll({
+            where: { item_id },
+        });
+
+        if (!orders.length) {
+            return res.status(404).send({ message: "No orders found for this item." });
+        }
+
+        res.status(200).send(orders);
+    } catch (err) {
+        res.status(500).send({ message: "Error retrieving orders for item.", error: err.message });
+    }
 };

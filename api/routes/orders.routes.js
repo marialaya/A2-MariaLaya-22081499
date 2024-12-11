@@ -6,17 +6,23 @@ module.exports = app => {
     // Create a new order
     router.post("/orders", orders.create);
   
-    // Retrieve all orders
+    // Retrieve all orders 
     router.get("/orders", orders.findAll);
   
-    // Retrieve a single order by ID
-    router.get("/orders/:orderId", orders.findOne);
+    // Retrieve 
+    router.get("/orders/:order_id", orders.findOne);
   
-    // Update an order by ID
-    router.put("/orders/:orderId", orders.update);
-  
+    // Update
+    router.put("/orders/:order_id", orders.update);
+
+      // Retrieve the customer associated with an order
+    router.get("/orders/:order_id/customer", orders.findCustomer);
+
+    // Retrieve all items in an order
+    router.get("/orders/:order_id/items", orders.findItems);
+    
     // Delete an order by ID
-    router.delete("/orders/:orderId", orders.delete);
+    router.delete("/orders/:order_id", orders.delete);
   
     app.use('/api', router);
   };
