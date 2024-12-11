@@ -1,72 +1,87 @@
-import { useState, useEffect } from 'react';  // import useEffect
-import PhoneList from './PhoneList.js';
-import CompanyList from './CompanyList.js';
+import React, { useState, useEffect } from "react";
 
-function Contact(props) {
-    const {contact, contacts, setContacts} = props;
-    const [expanded, setExpanded] = useState(false);
-    const [phones, setPhones] = useState([]);
-    const [companies, setCompanies] = useState([]);
+function Item() {
+  const [items, setItems] = useState([]);
+  const [editingItem, setEditingItem] = useState(null);
+  const [editedItem, setEditedItem] = useState({
+    item_name: "",
+  });
 
-    useEffect(() => {
-        fetch('http://localhost/api/contacts/' + contact.id + '/phones')
-            .then(response => response.json())
-            .then(data => setPhones(data))
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }, []);
+  useEffect(() => {
+    fetch("http://localhost:8080/api/items")
+      .then((res) => res.json())
+      .then((data) => setItems(data))
+      .catch((err) => console.error(err));
+  }, []);
 
-    useEffect(() => {
-        fetch('http://localhost/api/contacts/' + contact.id + '/companies')
-            .then(response => response.json())
-            .then(data => setCompanies(data))
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }, []);
+  const handleEdit = (item) => {
+    setEditingItem(item.item_id);
+    setEditedItem(item);
+  };
 
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/items/${editingItem}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editedItem),
+      });
 
-    const expandStyle = {
-        display: expanded ? 'block' : 'none'
-    };
+      if (!response.ok) throw new Error("Failed to update item");
 
-    async function doDelete(e) {
-        e.stopPropagation();
-
-        const response = await fetch('http://localhost/api/contacts/' + contact.id, {
-            method: 'DELETE',
-        });
-
-        let newContacts = contacts.filter((c) => {
-            return c.id !== contact.id;
-        });
-
-        setContacts(newContacts);
+      setItems((prev) =>
+        prev.map((i) => (i.item_id === editingItem ? editedItem : i))
+      );
+      setEditingItem(null);
+    } catch (err) {
+      console.error(err.message);
+      alert("Error updating item. Please try again.");
     }
+  };
 
-    return (
-        <div key={contact.id} className='contact' onClick={(e) => setExpanded(!expanded)}>
-            <div className='title'>
-                <strong>Name:&nbsp;</strong> {contact.name}
-            </div>
-            
-            <div className='address'>
-                <strong>Address:</strong> {contact.address}
-            </div>
-
-            <div className="button">
-                <button className='button red' onClick={doDelete}>Delete Contact</button>
-            </div>
-
-            <div style={expandStyle}>
-                <hr />
-                <PhoneList phones={phones} setPhones={setPhones} contact={contact} />
-                <hr />
-                <CompanyList companies={companies} setCompanies={setCompanies} contact={contact} />
-            </div>
-        </div>
-    );
+  return (
+    <div className="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item) => (
+            <tr key={item.item_id}>
+              {editingItem === item.item_id ? (
+                <>
+                  <td>
+                    <input
+                      type="text"
+                      value={editedItem.item_name}
+                      onChange={(e) =>
+                        setEditedItem({ ...editedItem, item_name: e.target.value })
+                      }
+                    />
+                  </td>
+                  
+                  <td>
+                    <button className="button green" onClick={handleSave}>Save</button>
+                    <button className="button red" onClick={() => setEditingItem(null)}>Cancel</button>
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td>{item.item_name}</td>
+                  <td>
+                    <button className="button blue" onClick={() => handleEdit(item)}>Edit</button>
+                  </td>
+                </>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
-export default Contact;
+export default Item;

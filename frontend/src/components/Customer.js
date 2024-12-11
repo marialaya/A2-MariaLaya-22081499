@@ -1,137 +1,111 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-function Company({ contact, company, companies, setCompanies }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedCompanyName, setEditedCompanyName] = useState(company.company_name);
-  const [editedCompanyAddress, setEditedCompanyAddress] = useState(company.company_address);
+function Customer() {
+  const [customers, setCustomers] = useState([]);
+  const [editingCustomer, setEditingCustomer] = useState(null);
+  const [editedCustomer, setEditedCustomer] = useState({
+    customer_name: "",
+    customer_email: "",
+    customer_phonenumber: "",
+  });
 
-  const deleteCompany = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost/api/contacts/${contact.id}/companies/${company.company_id}`,
-        {
-          method: "DELETE",
-        }
-      );
+  useEffect(() => {
+    fetch("http://localhost:8080/api/customers")
+      .then((res) => res.json())
+      .then((data) => setCustomers(data))
+      .catch((err) => console.error(err));
+  }, []);
 
-      if (!response.ok) throw new Error("Failed to delete company");
-
-      const updatedCompanies = companies.filter(
-        (c) => c.company_id !== company.company_id
-      );
-      setCompanies(updatedCompanies);
-    } catch (error) {
-      console.error(error.message);
-      alert("Error deleting company. Please try again.");
-    }
+  const handleEdit = (customer) => {
+    setEditingCustomer(customer.customer_id);
+    setEditedCustomer(customer);
   };
 
-  const updateCompany = async (e) => {
-    e.preventDefault();
-
+  const handleSave = async () => {
     try {
-      const response = await fetch(
-        `http://localhost/api/contacts/${contact.id}/companies/${company.company_id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            company_name: editedCompanyName,
-            company_address: editedCompanyAddress,
-          }),
-        }
+      const response = await fetch(`http://localhost:8080/api/customers/${editingCustomer}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editedCustomer),
+      });
+
+      if (!response.ok) throw new Error("Failed to update customer");
+
+      setCustomers((prev) =>
+        prev.map((c) => (c.customer_id === editingCustomer ? editedCustomer : c))
       );
-
-      if (!response.ok) throw new Error("Failed to update company");
-
-      const updatedCompanies = companies.map((c) =>
-        c.company_id === company.company_id
-            ? { ...c, company_name: editedCompanyName, company_address: editedCompanyAddress }
-            : c
-    );
-
-        setCompanies(updatedCompanies);
-        setIsEditing(false);
-
-    } catch (error) {
-        console.error(error.message);
-        alert("Error updating company. Please try again.");
+      setEditingCustomer(null);
+    } catch (err) {
+      console.error(err.message);
+      alert("Error updating customer. Please try again.");
     }
   };
 
   return (
-    <tr>
-    
-      {isEditing ? (
-        <>
-          <td>
-            <input
-              type="text"
-              value={editedCompanyName}
-              onChange={(e) => setEditedCompanyName(e.target.value)}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </td>
-          <td>
-            <input
-              type="text"
-              value={editedCompanyAddress}
-              onChange={(e) => setEditedCompanyAddress(e.target.value)}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </td>
-          <td>
-            <button 
-                className="button green" 
-                onClick={(e) => {
-                    e.stopPropagation();
-                    updateCompany(e);
-                }}
-            >
-              Save
-            </button>
-            <button
-                className="button red"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    setIsEditing(false);
-              }}
-                
-            >
-              Cancel
-            </button>
-          </td>
-        </>
-      ) : (
-        <>
-          <td>{company.company_name}</td>
-          <td>{company.company_address}</td>
-          <td>
-            <button
-              className="button blue"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsEditing(true);
-              }}
-            >
-              Edit
-            </button>
-            <button
-              className="button red"
-              onClick={(e) => {
-                e.stopPropagation(); 
-                deleteCompany();
-            }}
-        >
-              Delete
-            </button>
-          </td>
-        </>
-      )}
-    </tr>
+    <div className="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {customers.map((customer) => (
+            <tr key={customer.customer_id}>
+              {editingCustomer === customer.customer_id ? (
+                <>
+                  <td>
+                    <input
+                      type="text"
+                      value={editedCustomer.customer_name}
+                      onChange={(e) =>
+                        setEditedCustomer({ ...editedCustomer, customer_name: e.target.value })
+                      }
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="email"
+                      value={editedCustomer.customer_email}
+                      onChange={(e) =>
+                        setEditedCustomer({ ...editedCustomer, customer_email: e.target.value })
+                      }
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={editedCustomer.customer_phonenumber}
+                      onChange={(e) =>
+                        setEditedCustomer({ ...editedCustomer, customer_phonenumber: e.target.value })
+                      }
+                    />
+                  </td>
+                  <td>
+                    <button className="button green" onClick={handleSave}>Save</button>
+                    <button className="button red" onClick={() => setEditingCustomer(null)}>Cancel</button>
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td>{customer.customer_name}</td>
+                  <td>{customer.customer_email}</td>
+                  <td>{customer.customer_phonenumber}</td>
+                  <td>
+                    <button className="button blue" onClick={() => handleEdit(customer)}>Edit</button>
+                  </td>
+                </>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
-export default Company;
+export default Customer;
+
